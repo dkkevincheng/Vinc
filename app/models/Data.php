@@ -9,7 +9,6 @@ header('content-type:text/html;charset=utf-8');
 */
 class Data
 {
-
     //私有的属性
     private static $dbcon = false;
     private $host;
@@ -25,8 +24,8 @@ class Data
         $this->host = $config['host'] ? $config['host'] : 'localhost';
         $this->port = $config['port'] ? $config['port'] : '3306';
         $this->user = $config['user'] ? $config['user'] : 'root';
-        $this->pass = $config['pass'] ? $config['pass'] : 'root';
-        $this->db = $config['db'] ? $config['db'] : 'mydb';
+        $this->pass = $config['pass'] ? $config['pass'] : 'password';
+        $this->db = $config['db'] ? $config['db'] : 'database';
         $this->charset = isset($config['charset']) ? $config['charset'] : 'utf8';
         //连接数据库
         $this->db_connect();

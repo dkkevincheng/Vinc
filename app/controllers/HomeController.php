@@ -1,13 +1,8 @@
 <?php
-
 class HomeController extends BaseController
 {
     public function index()
     {
-        // echo "this is Vinc!";
-        $db = Data::getIntance();
-        $sql = "select * from articles limit 0,1";
-        $list = $db->getAll($sql);
-        require_once VINC_PATH . '/../app/views/home.php';
+        $this->view = View::make('home')->with('article', Article::first())->withTitle('一个优雅简单的PHP框架--vinc')->withContent('vinc框架');
     }
 }

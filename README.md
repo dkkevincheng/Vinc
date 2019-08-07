@@ -226,9 +226,145 @@ class HomeController extends BaseController
 
 MVC框架本质是一种管理代码的格式。现在几乎所有人都是通过学习某个框架来了解 MVC 的。但是一旦脱离了框架，一个页面也写不出。我认为，框架再成熟，也离不开PHP的基本原理和哲学。不管哪种语言都是为了让人脑这样的超低 RAM 的计算机能够制造出远超人脑 RAM 的大型软件。一个框架驱动程序做的时区是这样的，入口文件通过路由调用控制器，控制器调用模型，模型和数据库交互，返回数据给控制器，控制器在调用视图，视图把数据装载进视图显示给用户，流程结束。
 
+### 使用ORM提高框架的效率
+
+本篇集成一个 ORM Composer包
+
+```bash
+# 编辑composer.json
+    "require": {
+        "php": ">=7.1.3",
+        "noahbuscher/macaw": "dev-master",
+        "illuminate/database": "*",
+        "filp/whoops": "*"
+    }
+    # illuminate/database这个是Laravel的ORM 包。我试用了几个著名的ORM，发现还是 Laravel 的 Eloquent 好用！filp/whoops 是我们的错误提示组件包。也是laravel正在使用的。
+# 编辑view/home.php
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title><?php echo $title ?></title>
+</head>
+
+<body>
+    <div class="article">
+        <h1><?php echo $article['title'] ?></h1>
+        <div class="content">
+            <?php echo $article['content'] ?>
+        </div>
+    </div>
+    <ul class="fuckme">
+        <li>欢迎使用!</li>
+        <li>
+            <?php echo $content ?>
+        </li>
+    </ul>
+</body>
+
+</html>
+```
+
+```bash
+# 编辑BaseController.php
+<?php
+class BaseController
+{
+    public function __construct()
+    { }
+    public function __destruct()
+    {
+        $view = $this->view;
+        if ($view instanceof View) {
+            extract($view->data);
+            require $view->view;
+        }
+    }
+}
+
+# 编辑HomeController.php
+<?php
+class HomeController extends BaseController
+{
+    public function index()
+    {
+        $this->view = View::make('home')->with('article', Article::first())->withTitle('一个优雅简单的PHP框架--vinc')->withContent('vinc框架');
+    }
+}
+
+# 编辑models/View.php
+<?php
+class View
+{
+    public $view;
+    public $data;
+    public function __construct($view)
+    {
+        $this->view = $view;
+    }
+    public static function make($viewName = null)
+    {
+        if (!$viewName) {
+            throw new InvalidArgumentException("视图名称不能为空！");
+        } else {
+            $viewFilePath = self::getFilePath($viewName);
+            if (is_file($viewFilePath)) {
+                return new View($viewFilePath);
+            } else {
+                throw new UnexpectedValueException("视图文件不存在！");
+            }
+        }
+    }
+    public function with($key, $value = null)
+    {
+        $this->data[$key] = $value;
+        return $this;
+    }
+    private static function getFilePath($viewName)
+    {
+        $filePath = str_replace('.', '/', $viewName);
+        return VINC_PATH . '/../app/views/' . $filePath . '.php';
+    }
+    public function __call($method, $parameters)
+    {
+        if (starts_with($method, 'with')) {
+            return $this->with(snake_case(substr($method, 4)), $parameters[0]);
+        }
+        throw new BadMethodCallException("方法 [$method] 不存在！.");
+    }
+}
+
+# 编辑Article.php
+<?php
+class Article extends Illuminate\Database\Eloquent\Model
+{
+    public $timestamps = false;
+}
+
+# 刷新类文件
+composer dump-autoload
+```
+
+启动php-server，刷新浏览器,看到内容正常显示。至此，视图装载器实现完成
+
+### 把门面做出来，让变美更简单
+
+使用我们的框架做一个博客...待续
+
+### 发送属于你自己的第一封邮件
+
+...待续
+
+### 缓存服务器Redis，怎么能少了你呢
+
+...待续
+
 ### 参考文档列表
 
 > 1.[Pinatra/Pinatra](https://github.com/Pinatra/Pinatra)
 > 2.[noahbuscher/macaw](https://github.com/noahbuscher/macaw)
+> 3.[Illuminate/Database](https://github.com/Illuminate/Database/)
+> 4.[filp/whoops](https://github.com/filp/whoops)
 
 ### 如果本文对你有帮助，请支持

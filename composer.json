@@ -12,7 +12,9 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.1.3",
-        "noahbuscher/macaw": "dev-master"
+        "noahbuscher/macaw": "dev-master",
+        "illuminate/database": "*",
+        "filp/whoops": "*"
     },
     "autoload": {
         "classmap": [
