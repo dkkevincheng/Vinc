@@ -15,6 +15,10 @@
         "noahbuscher/macaw": "dev-master"
     },
     "autoload": {
+        "classmap": [
+            "app/controllers",
+            "app/models"
+        ],
         "psr-4": {
             "Vinc\\": "src/"
         }
