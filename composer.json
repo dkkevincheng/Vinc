@@ -1,0 +1,28 @@
+{
+    "name": "dkkevincheng/vinc",
+    "description": "自己动手搭建一个属于自己的MVC框架，实现极简主义设计。风格类似Sinatra。",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "kevinboysir",
+            "email": "dkkevincheng@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.1.3",
+        "noahbuscher/macaw": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vinc\\": "src/"
+        }
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://mirrors.aliyun.com/composer/"
+        }
+    }
+}
